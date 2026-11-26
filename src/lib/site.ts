@@ -67,16 +67,15 @@ export const gridMakes = [...marqueeMakes, 'Audi', 'Volkswagen', 'Mazda', 'Dodge
 
 /* ---------- Navigation ---------- */
 export const menu = [
+  { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
   { label: 'Diagnose in 3D', href: '/diagnose' },
-  { label: 'Fleet', href: '/fleet' },
   { label: 'Contact', href: '/contact' },
 ];
 export const footerMenu = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
   { label: 'Diagnose in 3D', href: '/diagnose' },
-  { label: 'Fleet', href: '/fleet' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -84,7 +83,6 @@ export const footerMenu = [
 export const gateLines: Record<string, string> = {
   '/': 'Glass fitted like a safety part · Not simply replaced',
   '/services': 'Five services · One standard',
-  '/fleet': 'Zero downtime · One invoice',
   '/diagnose': 'Show us the damage · In 3D',
   '/contact': 'Every chip starts with a conversation',
 };
@@ -240,7 +238,7 @@ export const value = {
       ],
     },
     {
-      label: 'For fleets', cta: 'Fleet program', href: '/fleet',
+      label: 'For fleets', cta: 'Fleet pricing', href: '/contact?fleet=priority',
       cards: [
         { title: 'Cleared before clock-in', metric: 'Cleared', label: 'Before clock-in', text: 'Glass fitted, ADAS recalibrated and documented before the driver starts the shift.' },
         { title: 'A slot within the hour', metric: '1 hr', label: 'Slot confirmed', text: 'One number for the whole fleet; a slot confirmed within the hour.' },
