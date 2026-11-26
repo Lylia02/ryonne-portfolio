@@ -64,7 +64,7 @@ export default function Garage() {
   const [lifted, setLifted] = useState(false);
   const [paint, setPaint] = useState(diagnose.paints[1].variant);
   const [custom, setCustom] = useState<THREE.Object3D | null>(null);
-  const [mine, setMine] = useState<'closed' | 'open' | 'working' | 'error'>('closed');
+  const [mine, setMine] = useState<'closed' | 'open' | 'working' | 'error' | 'quota'>('closed');
   const [mineStep, setMineStep] = useState(0);
   // glass
   const [step, setStep] = useState<StepId>('impact');
@@ -226,7 +226,7 @@ export default function Garage() {
       const { photoToGlb, loadCustom } = await import('@/lib/scan');
       const obj = await loadCustom(await photoToGlb(f, setMineStep));
       takeCustom(obj);
-    } catch (e) { console.error('[my car]', e); setMine('error'); }
+    } catch (e) { console.error('[my car]', e); setMine((e as Error).message === 'quota' ? 'quota' : 'error'); }
   };
   const fromScan = async (f: File) => {
     setMine('working'); setMineStep(4);
@@ -321,6 +321,7 @@ export default function Garage() {
                   <input type="file" accept=".glb,model/gltf-binary" onChange={e => { const f = e.target.files?.[0]; if (f) fromScan(f); }} />
                 </label>
                 {mine === 'error' && <p className="gx__err">{G.yourCar.busy}</p>}
+                {mine === 'quota' && <p className="gx__err">{G.yourCar.quota}</p>}
                 <p className="gx__small">{G.yourCar.privacy}</p>
               </>}
             </div>
@@ -475,7 +476,7 @@ export default function Garage() {
         <div className="gx__stats mono" aria-live="off">
           <b>{stats?.fps ?? '—'} fps</b>
           <span>{stats?.calls ?? '—'} draw calls · {stats ? Math.round(stats.tris / 1000) + 'k' : '—'} triangles</span>
-          <i>React Three Fiber · three.js · DecalGeometry · reflective floor · Web Audio · GSAP{custom ? ' · TRELLIS (image → 3D)' : ''}</i>
+          <i>React Three Fiber · three.js · DecalGeometry · reflective floor · Web Audio · GSAP{custom ? ' · Hugging Face (image → 3D)' : ''}</i>
         </div>
       )}
       <p className="gx__note mono">{G.note} · 3D car: “Car Concept”, Eric Chadwick, CC BY 4.0</p>

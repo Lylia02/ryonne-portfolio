@@ -31,13 +31,14 @@ export const garage = {
     title: 'Bring your own car',
     text: 'Turn a photo of your car into a 3D model, or drop a 3D scan. Then show us where the glass is damaged, right on your car.',
     photo: 'From a photo',
-    photoHint: 'One clear photo, 3/4 front view, the whole car in frame. An open-source AI (TRELLIS, by Microsoft) builds the 3D model in about two minutes. Free, so it can be busy.',
+    photoHint: 'One clear photo, 3/4 front view, the whole car in frame. An open-source AI (Stable Fast 3D, or TRELLIS as a backup) builds the 3D model. Free, so it can be busy.',
     scan: 'From a 3D scan',
     scanHint: 'A .glb file, for example from a free phone scanning app like Scaniverse or Polycam.',
     choose: 'Choose a photo',
     chooseScan: 'Choose a .glb file',
     working: ['Sending the photo', 'Removing the background', 'Building the shape', 'Painting the surface', 'Bringing it into the garage'],
     busy: 'The free AI is busy right now. Try again in a few minutes, or use a 3D scan.',
+    quota: 'Your free AI time for today is used up (Hugging Face gives about 2 minutes of GPU a day per visitor). Try again tomorrow, or use a 3D scan.',
     reset: 'Back to the Ryonne car',
     limited: 'On your car: damage and glass quote. Parts and driving use the Ryonne car.',
     privacy: 'Your photo is sent to a public Hugging Face Space to build the model. Nothing is kept on this site.',
@@ -60,6 +61,3 @@ export const composition: Record<PartId, { title: string; materials: string[]; t
   wheelRR: { title: 'Rear right wheel', materials: ['Aluminium alloy rim', 'Rubber tyre', 'Steel belts'], text: 'The tyre is layers of rubber over steel and fabric belts.' },
 };
 
-/* Photo → 3D: a public, free Hugging Face Space running an open-source model.
-   Change it here (or with NEXT_PUBLIC_IMG3D_SPACE) if the Space moves. */
-export const IMG3D_SPACE = process.env.NEXT_PUBLIC_IMG3D_SPACE || 'microsoft/TRELLIS.2';
