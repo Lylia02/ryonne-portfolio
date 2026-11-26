@@ -78,7 +78,14 @@ export async function loadCustom(buf: ArrayBuffer): Promise<THREE.Object3D> {
     const mats = (Array.isArray(m.material) ? m.material : [m.material]) as THREE.MeshStandardMaterial[];
     mats.forEach(mt => {
       if (!mt.map) { mt.color?.set('#c9ccd2'); mt.roughness = .45; mt.metalness = .35; } // untextured: satin "scan" finish
-      mt.side = THREE.DoubleSide;
+      else {
+        // AI textures are packed in islands: mipmaps bleed their edges into white seams → sample without them
+        for (const t of [mt.map, mt.normalMap, mt.roughnessMap, mt.metalnessMap]) if (t) { t.generateMipmaps = false; t.minFilter = THREE.LinearFilter; t.anisotropy = 1; t.needsUpdate = true; }
+        // guessed metal/gloss from a photo reflect the studio lights in patches: keep it a soft, painted look
+        mt.metalnessMap = null; mt.roughnessMap = null; mt.metalness = Math.min(mt.metalness ?? 0, .15); mt.roughness = Math.max(mt.roughness ?? 1, .55);
+        mt.envMapIntensity = .7; mt.needsUpdate = true;
+      }
+      mt.side = THREE.FrontSide;
     });
   });
   root.updateMatrixWorld(true);

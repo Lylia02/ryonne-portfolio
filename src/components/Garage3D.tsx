@@ -33,7 +33,7 @@ export type Stats = { fps: number; calls: number; tris: number };
 export type Input = { up: boolean; down: boolean; left: boolean; right: boolean; brake: boolean };
 
 type Props = {
-  mode: GarageMode; intro: boolean; lifted: boolean; paint: string; custom: THREE.Object3D | null;
+  mode: GarageMode; intro: boolean; lifted: boolean; paint: string; custom: THREE.Object3D | null; customTurn: number;
   view: GlassView; picking: boolean; impact: Impact | null; kind: CrackKind; inch: number; runner: number;
   base: Base | null; addons: string[]; rain: boolean; installAt: number | null; installed: boolean; showZone: boolean;
   explode: number; highlight: PartId | null; tags: React.RefObject<Partial<Record<PartId, HTMLElement | null>>>;
@@ -343,6 +343,16 @@ function Car(p: Props & { rigRef: React.RefObject<Rig | null>; spin: React.RefOb
 
   const z = p.custom ? null : r.zones.find(x => x.id === p.impact?.glass) ?? null;
   const W = r.zones.find(x => x.id === 'windshield')!;
+
+  /* a car from a photo or a scan: lay its long side along the garage, then the visitor can turn it around */
+  useEffect(() => {
+    const c = p.custom; if (!c) return;
+    c.rotation.set(0, 0, 0); c.updateMatrixWorld(true);
+    const size = new THREE.Box3().setFromObject(c).getSize(new THREE.Vector3());
+    const along = Math.atan2(-r.front.z, r.front.x); // turns local +x onto the car's front
+    c.rotation.y = along + (size.x >= size.z ? 0 : Math.PI / 2) + p.customTurn * Math.PI;
+    c.updateMatrixWorld(true);
+  }, [p.custom, p.customTurn, r]);
 
   /* paint (the glass keeps its own materials) */
   useEffect(() => {

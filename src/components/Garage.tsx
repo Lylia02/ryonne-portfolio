@@ -64,6 +64,7 @@ export default function Garage() {
   const [lifted, setLifted] = useState(false);
   const [paint, setPaint] = useState(diagnose.paints[1].variant);
   const [custom, setCustom] = useState<THREE.Object3D | null>(null);
+  const [turn, setTurn] = useState(0);
   const [mine, setMine] = useState<'closed' | 'open' | 'working' | 'error' | 'quota'>('closed');
   const [mineStep, setMineStep] = useState(0);
   // glass
@@ -234,7 +235,7 @@ export default function Garage() {
     catch (e) { console.error('[my car]', e); setMine('error'); }
   };
   const takeCustom = (obj: THREE.Object3D) => {
-    setCustom(obj); setMine('closed'); setMode('glass'); restartGlass();
+    setCustom(obj); setTurn(0); setMine('closed'); setMode('glass'); restartGlass();
   };
   const dropCustom = () => { setCustom(null); restartGlass(); setMode('explore'); };
 
@@ -251,7 +252,7 @@ export default function Garage() {
   return (
     <section className={`gx is-${mode}${intro ? ' is-intro' : ''}${panel ? ' has-panel' : ''}`} ref={ref} aria-label="The 3D garage">
       <div className="gx__stage" data-cursor="">
-        <Scene mode={mode} intro={intro} lifted={lifted} paint={paint} custom={custom}
+        <Scene mode={mode} intro={intro} lifted={lifted} paint={paint} custom={custom} customTurn={turn}
           view={view} picking={mode === 'glass' && (step === 'impact' || step === 'damage')} impact={impact} kind={kind} inch={shownInch} runner={shownRunner}
           base={mode === 'glass' && (step === 'glass' || step === 'install' || step === 'build') ? base : installed ? base : null}
           addons={(mode === 'glass' && (step === 'glass' || step === 'install' || step === 'build')) || installed ? picked.map(a => a.id) : []}
@@ -449,6 +450,7 @@ export default function Garage() {
               <button type="button" className={'gx__tool' + (lifted ? ' is-on' : '')} onClick={() => setLifted(v => !v)} aria-pressed={lifted}>⇡ {lifted ? G.lift.down : G.lift.up}</button>
               {!custom && <div className="gx__paints">{diagnose.paints.map(p => <button type="button" key={p.variant} className={paint === p.variant ? 'is-on' : ''} onClick={() => setPaint(p.variant)} aria-label={p.label} title={p.label}><i style={{ background: p.swatch }} /></button>)}</div>}
             </>}
+            {custom && (mode === 'explore' || (mode === 'glass' && step === 'impact')) && <button type="button" className="gx__tool" onClick={() => setTurn(t => 1 - t)}>↻ Turn it around</button>}
             {mode === 'glass' && g && !custom && (step === 'glass' || step === 'build') && <>
               <button type="button" className={'gx__tool' + (rain ? ' is-on' : '')} onClick={() => setRain(r => !r)} aria-pressed={rain}>☂ {lab.rain}</button>
               <button type="button" className={'gx__tool' + (road ? ' is-on' : '')} onClick={toggleRoad} aria-pressed={road}>♪ {lab.hear}</button>
